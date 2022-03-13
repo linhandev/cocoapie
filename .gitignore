@@ -1,3 +1,6 @@
+PythonAPI/build/
+PythonAPI/dist/
+
 images/
 annotations/
 results/

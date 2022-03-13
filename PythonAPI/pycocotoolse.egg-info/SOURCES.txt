@@ -7,7 +7,6 @@ common/gason.h
 common/maskApi.c
 common/maskApi.h
 pycocotoolse/__init__.py
-pycocotoolse/_mask.c
 pycocotoolse/_mask.pyx
 pycocotoolse/coco.py
 pycocotoolse/cocoeval.py
