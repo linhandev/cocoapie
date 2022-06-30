@@ -51,6 +51,7 @@ from matplotlib.collections import PatchCollection
 from matplotlib.patches import Polygon
 import numpy as np
 import itertools
+
 # from . import mask as maskUtils
 import os
 import os.path as osp
@@ -97,9 +98,9 @@ class COCO:
             print("loading annotations into memory...")
             tic = time.time()
             dataset = json.load(open(annotation_file, "r"))
-            assert (
-                type(dataset) == dict
-            ), "annotation file format {} not supported".format(type(dataset))
+            assert type(dataset) == dict, "annotation file format {} not supported".format(
+                type(dataset)
+            )
             print("Done (t={:0.2f}s)".format(time.time() - tic))
             self.dataset = dataset
             self.createIndex()
@@ -119,9 +120,7 @@ class COCO:
         # create index
         print("creating index...")
         anns, cats, imgs = {}, {}, {}
-        imgNameToId, imgToAnns, catToImgs, imgNameToId = [
-            defaultdict(list) for _ in range(4)
-        ]
+        imgNameToId, imgToAnns, catToImgs, imgNameToId = [defaultdict(list) for _ in range(4)]
         if "annotations" in self.dataset:
             for ann in self.dataset["annotations"]:
                 imgToAnns[ann["image_id"]].append(ann)
@@ -178,7 +177,7 @@ class COCO:
         id: int,
         name: str,
         color: list,
-        supercategory: str = "",
+        supercategory: str = "none",
     ):
         cat = {
             "id": id,
@@ -345,25 +344,17 @@ class COCO:
             anns = self.dataset["annotations"]
         else:
             if not len(imgIds) == 0:
-                lists = [
-                    self.imgToAnns[imgId] for imgId in imgIds if imgId in self.imgToAnns
-                ]
+                lists = [self.imgToAnns[imgId] for imgId in imgIds if imgId in self.imgToAnns]
                 anns = list(itertools.chain.from_iterable(lists))
             else:
                 anns = self.dataset["annotations"]
             anns = (
-                anns
-                if len(catIds) == 0
-                else [ann for ann in anns if ann["category_id"] in catIds]
+                anns if len(catIds) == 0 else [ann for ann in anns if ann["category_id"] in catIds]
             )
             anns = (
                 anns
                 if len(areaRng) == 0
-                else [
-                    ann
-                    for ann in anns
-                    if ann["area"] > areaRng[0] and ann["area"] < areaRng[1]
-                ]
+                else [ann for ann in anns if ann["area"] > areaRng[0] and ann["area"] < areaRng[1]]
             )
         if not iscrowd == None:
             ids = [ann["id"] for ann in anns if ann["iscrowd"] == iscrowd]
@@ -387,21 +378,13 @@ class COCO:
             cats = self.dataset["categories"]
         else:
             cats = self.dataset["categories"]
-            cats = (
-                cats
-                if len(catNms) == 0
-                else [cat for cat in cats if cat["name"] in catNms]
-            )
+            cats = cats if len(catNms) == 0 else [cat for cat in cats if cat["name"] in catNms]
             cats = (
                 cats
                 if len(supNms) == 0
                 else [cat for cat in cats if cat["supercategory"] in supNms]
             )
-            cats = (
-                cats
-                if len(catIds) == 0
-                else [cat for cat in cats if cat["id"] in catIds]
-            )
+            cats = cats if len(catIds) == 0 else [cat for cat in cats if cat["id"] in catIds]
         ids = [cat["id"] for cat in cats]
         return ids
 
@@ -644,9 +627,7 @@ class COCO:
             fname = os.path.join(tarDir, img["file_name"])
             if not os.path.exists(fname):
                 urlretrieve(img["coco_url"], fname)
-            print(
-                "downloaded {}/{} images (t={:0.1f}s)".format(i, N, time.time() - tic)
-            )
+            print("downloaded {}/{} images (t={:0.1f}s)".format(i, N, time.time() - tic))
 
     def loadNumpyAnnotations(self, data):
         """
