@@ -177,14 +177,15 @@ class COCO:
         id: int,
         name: str,
         color: list,
-        supercategory: str = "none",
+        supercategory: str = None,
     ):
         cat = {
             "id": id,
             "name": name,
             "color": color,
-            "supercategory": supercategory,
         }
+        if supercategory is not None:
+            cat["supercategory"] = supercategory
         self.cats[id] = cat
         self.dataset["categories"].append(cat)
 
@@ -267,16 +268,19 @@ class COCO:
             id = self.maxAnnId
         if bbox is None:
             bbox = self.getBB(segmentation)
+        if len(segmentation) == 0:
+            segmentation = None
 
         ann = {
             "id": id,
             "iscrowd": 0,
             "image_id": image_id,
             "category_id": category_id,
-            "segmentation": [segmentation],
-            "area": self.getArea(segmentation),
+            "area": self.getArea(segmentation) if segmentation is not None else bbox[2]*bbox[3],
             "bbox": bbox,
         }
+        if segmentation is not None:
+            ann['segmentation'] = segmentation
 
         self.dataset["annotations"].append(ann)
         self.anns[id] = ann
