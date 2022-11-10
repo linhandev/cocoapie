@@ -118,7 +118,7 @@ class COCO:
 
     def createIndex(self):
         # create index
-        print("creating index...")
+        # print("creating index...")
         anns, cats, imgs = {}, {}, {}
         imgNameToId, imgToAnns, catToImgs, imgNameToId = [defaultdict(list) for _ in range(4)]
         if "annotations" in self.dataset:
@@ -145,7 +145,7 @@ class COCO:
             for ann in self.dataset["annotations"]:
                 catToImgs[ann["category_id"]].append(ann["image_id"])
         # TODO: read license
-        print("index created!")
+        # print("index created!")
 
         self.anns = anns
         self.imgToAnns = imgToAnns
